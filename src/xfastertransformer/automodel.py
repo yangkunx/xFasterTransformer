@@ -142,10 +142,14 @@ class AutoModel:
         )
         self.input(input_ids)
 
+        token_list = []
         while not self.is_done():
+            if len(token_list) > 3 and token_list[-3:] == [151645, 198, 151644]:
+                break
             next_tokens = self.forward()
             if streamer is not None and input_ids is not None:
                 streamer.put(next_tokens.cpu())
+            token_list.extend(next_tokens.view(-1).tolist()[:1])
 
         if streamer is not None and input_ids is not None:
             streamer.end()

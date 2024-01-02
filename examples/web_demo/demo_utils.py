@@ -90,7 +90,7 @@ class ChatDemo:
                             submitBtn = gr.Button("Submit", variant="primary")
                     with gr.Column(scale=1):
                         perf_txt = gr.Textbox(
-                            value="Latency:\t0 ms\nThrougput:\t0 tokens/s",
+                            value="首包延迟:\t0 ms\n生成速度:\t0 tokens/s",
                             interactive=False,
                             container=False,
                             lines=3,
@@ -181,8 +181,12 @@ class ChatDemo:
         time_cost = []
 
         while not self.model.is_done():
+            # todo(marvin): add Qwen stop id to XFT
+            if len(token_list) > 3 and token_list[-3:] == [151645, 198, 151644]:
+                break
             start_time = time.perf_counter()
             next_token_id = self.model.forward()
+            # print(next_token_id)
             end_time = time.perf_counter()
             next_token_id = next_token_id.view(-1).tolist()[:1]
             time_cost.append(end_time - start_time)
@@ -191,15 +195,17 @@ class ChatDemo:
                 total_cost = sum(time_cost[1:])
                 latency = total_cost * 1000 / len(time_cost[1:])
                 throughput = (len(time_cost[1:]) * batch_size) / total_cost
-                perf_info = f"Latency:\t{latency:.2f} ms\nThrougput:\t{throughput:.2f} tokens/s"
+                perf_info = f"首包延迟:\t{time_cost[0] * 1000:.2f} ms\n生成速度:\t{throughput:.2f} tokens/s"
             yield self.post_process_generation(next_token_id, token_list, chatbot, query, history, perf_info)
 
-        total_cost = sum(time_cost[1:])
-        latency = total_cost * 1000 / len(time_cost[1:])
-        throughput = (len(time_cost[1:]) * batch_size) / total_cost
         response = self.tokenizer.decode(token_list, skip_special_tokens=True)
         response = self.process_response(response)
         print(f"Query is : {query.strip()}")
         print(f"Response is : {response}")
-        print(f"Latency:\t{latency:.2f} ms")
-        print(f"Througput:\t{throughput:.2f} tokens/s")
+
+        # if len(time_cost) > 1:
+        #     total_cost = sum(time_cost[1:])
+        #     latency = total_cost * 1000 / len(time_cost[1:])
+        #     throughput = (len(time_cost[1:]) * batch_size) / total_cost
+        #     print(f"Latency:\t{latency:.2f} ms")
+        #     print(f"Througput:\t{throughput:.2f} tokens/s")
