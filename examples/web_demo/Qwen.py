@@ -124,7 +124,7 @@ class QwenDemo(ChatDemo):
 
     def html_func(self):
         gr.HTML("""<h1 align="center">通义千问72B (xFasterTransformer)</h1>""")
-        gr.HTML("""<h1 align="center"> ecs.c8i.24xlarge(96vcpus * 4) 基于第五代至强处理器平台的大语言模型推理</h1>""")
+        gr.HTML("""<h1 align="center"> ecs.g8i.24xlarge(96vcpu * 4) 基于第五代至强处理器平台的大语言模型推理</h1>""")
 
 
 if __name__ == "__main__":

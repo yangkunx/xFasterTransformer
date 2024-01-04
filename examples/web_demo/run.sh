@@ -71,7 +71,7 @@ export FI_VERBS_RX_IOV_LIMIT=1
 # export FI_OFI_RXM_BUFFER_SIZE=32768
 
 ############# OneCCL configuration #############
-export CCL_ALLREDUCE=recursive_doubling
+# export CCL_ALLREDUCE=recursive_doubling
 export CCL_ALLREDUCE="recursive_doubling:0-16384;2d:16385-524288;nreduce:524289-max"
 
 export CCL_PROCESS_LAUNCHER=none
