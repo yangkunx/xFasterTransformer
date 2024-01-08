@@ -21,6 +21,8 @@ dist/
 # 3drparty
 /3rdparty/ig
 /3rdparty/mklml
+/3rdparty/ex-mklml1234
+/3rdparty/ex-mklml1235
 /3rdparty/mkl
 /3rdparty/oneCCL
 /3rdparty/oneccl
