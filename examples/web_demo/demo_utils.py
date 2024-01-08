@@ -170,13 +170,14 @@ class ChatDemo:
 
     def predict(self, query, chatbot, batch_size, max_length, history):
         chatbot.append((self.parse_text(query), ""))
-        self.model.config(max_length)
+        self.model.config(max_length, do_sample=False, top_p=0.8, repetition_penalty=1.1)
 
         input_tokens = self.create_chat_input_token(query, history)
         if batch_size > 1:
             input_tokens = input_tokens.tile((batch_size, 1))
 
         self.model.input(input_tokens)
+        print(f"input token id: {input_tokens}")
         token_list = []
         time_cost = []
 
@@ -186,7 +187,7 @@ class ChatDemo:
                 break
             start_time = time.perf_counter()
             next_token_id = self.model.forward()
-            # print(next_token_id)
+            print(next_token_id)
             end_time = time.perf_counter()
             next_token_id = next_token_id.view(-1).tolist()[:1]
             time_cost.append(end_time - start_time)

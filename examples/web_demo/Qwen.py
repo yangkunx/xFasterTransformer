@@ -64,11 +64,12 @@ class QwenDemo(ChatDemo):
                         line = line.replace("$", "&#36;")
                     lines[i] = "<br>" + line
         response = "".join(lines)
+        response = response.rstrip("human:")
         return response
 
     def create_chat_input_token(self, query, history):
         system_context = "You are a helpful assistant."
-        max_window_size = 6144
+        max_window_size = 1536
         im_start, im_end = "<|im_start|>", "<|im_end|>"
         im_start_tokens = [self.tokenizer.im_start_id]
         im_end_tokens = [self.tokenizer.im_end_id]
